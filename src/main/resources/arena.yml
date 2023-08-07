@@ -1,0 +1,9 @@
+world: "world"
+player-one-spawn:
+  x: 0.0
+  y: 0.0
+  z: 0.0
+player-two-spawn:
+  x: 0.0
+  y: 0.0
+  z: 0.0
