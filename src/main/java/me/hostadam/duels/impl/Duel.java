@@ -71,7 +71,6 @@ public class Duel {
                 displayActionBar(opponent, "§eGame Time§7: §f" + gameTime + "s");
             }
         }, 20, 20);
-
         return true;
     }
 

@@ -1,12 +1,17 @@
 package me.hostadam.duels;
 
+import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import me.hostadam.duels.impl.Duel;
 import me.hostadam.duels.impl.DuelRequest;
 import me.hostadam.duels.impl.arena.Arena;
 import me.hostadam.duels.impl.kit.Kit;
+import me.hostadam.duels.util.Config;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -15,9 +20,9 @@ public class DuelHandler {
     private final DuelsPlugin duelsPlugin;
     private Arena arena;
     private Kit defaultKit;
-    private List<Kit> kits;
-    private List<Duel> duels, duelQueue;
-    private Table<UUID, UUID, DuelRequest> requests;
+    private List<Kit> kits = new ArrayList<>();
+    private List<Duel> duels = new ArrayList<>(), duelQueue = new ArrayList<>();;
+    private Table<UUID, UUID, DuelRequest> requests = HashBasedTable.create();
 
     public DuelHandler(DuelsPlugin plugin) {
         this.duelsPlugin = plugin;
@@ -25,7 +30,43 @@ public class DuelHandler {
     }
 
     public void load() {
+        Config kitConfig = this.duelsPlugin.getKitConfig();
+        for(String key : this.duelsPlugin.getKitConfig().getConfigurationSection("kits").getKeys(false)) {
 
+        }
+    }
+
+    private void loadKits() {
+        Config kitConfig = this.duelsPlugin.getKitConfig();
+        for(String key : kitConfig.getConfigurationSection("kits").getKeys(false)) {
+            String name = kitConfig.getString("kits." + key + ".name");
+            ItemStack[] armor = new ItemStack[4];
+
+            if(kitConfig.contains("kits." + key + ".armor-content.helmet")) {
+                ItemStack helmet = new ItemStack(Material.valueOf("kits." + key + ".armor-content.helmet.material"));
+                helmet.setAmount(kitConfig.getInt("kits." + key + ".armor-content.helmet.amount"));
+                armor[0] = helmet;
+            }
+
+            if(kitConfig.contains("kits." + key + ".armor-content.chestplate")) {
+                ItemStack chestplate = new ItemStack(Material.valueOf("kits." + key + ".armor-content.chestplate.material"));
+                chestplate.setAmount(kitConfig.getInt("kits." + key + ".armor-content.chestplate.amount"));
+                armor[1] = chestplate;
+            }
+
+            if(kitConfig.contains("kits." + key + ".armor-content.leggings")) {
+                ItemStack leggings = new ItemStack(Material.valueOf("kits." + key + ".armor-content.leggings.material"));
+                leggings.setAmount(kitConfig.getInt("kits." + key + ".armor-content.leggings.amount"));
+                armor[2] = leggings;
+            }
+
+            if(kitConfig.contains("kits." + key + ".armor-content.leggings")) {
+                ItemStack boots = new ItemStack(Material.valueOf("kits." + key + ".armor-content.boots.material"));
+                boots.setAmount(kitConfig.getInt("kits." + key + ".armor-content.boots.amount"));
+                armor[4] = boots;
+            }
+        }
+        
     }
 
     public void save() {
