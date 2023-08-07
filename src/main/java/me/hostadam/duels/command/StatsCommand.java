@@ -1,7 +1,7 @@
 package me.hostadam.duels.command;
 
 import me.hostadam.duels.DuelHandler;
-import me.hostadam.duels.impl.DuelRequest;
+import me.hostadam.duels.impl.DuelPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -11,48 +11,41 @@ import java.util.Collections;
 
 public class StatsCommand extends Command {
 
-    private final DuelHandler duelHandler;
-
-    public StatsCommand(DuelHandler handler) {
-        super("accept", "Accept a duel request", "/accept <name>", Collections.emptyList());
-        this.duelHandler = handler;
+    public StatsCommand() {
+        super("stats", "View the statistics", "/stats [name]", Collections.emptyList());
     }
 
     @Override
     public boolean execute(CommandSender sender, String label, String[] args) {
         if(!(sender instanceof Player player)) {
-            sender.sendMessage("§cYou must be a player to run this command.");
+            sender.sendMessage("§cYou must be a player to use this.");
             return true;
         }
 
-        if(args.length < 1) {
-            sender.sendMessage("§cUsage: /accept <name>");
+        if(args.length == 0) {
+            DuelPlayer duelPlayer = DuelPlayer.fromPlayer(player);
+            this.show(player, duelPlayer);
             return true;
         }
 
         Player opponent = Bukkit.getPlayer(args[0]);
         if(opponent == null) {
-            sender.sendMessage("§cInvalid player.");
+            DuelPlayer duelPlayer = DuelPlayer.fromPlayer(player);
+            this.show(player, duelPlayer);
             return true;
         }
 
-        if(this.duelHandler.getDuelByPlayer(player) != null) {
-            sender.sendMessage("§cYou are already in a duel.");
-            return true;
-        }
-
-        if(this.duelHandler.getDuelByPlayer(opponent) != null) {
-            sender.sendMessage("§cThe opponent is already in a duel.");
-            return true;
-        }
-
-        DuelRequest request = this.duelHandler.getDuelRequest(opponent, player);
-        if(request == null) {
-            sender.sendMessage("§cThis player has not sent a duel request.");
-            return true;
-        }
-
-        this.duelHandler.startDuel(opponent, player, request);
+        DuelPlayer duelPlayer = DuelPlayer.fromPlayer(opponent);
+        this.show(player, duelPlayer);
         return true;
+    }
+
+    private void show(CommandSender sender, DuelPlayer duelPlayer) {
+        sender.sendMessage("§e§lStatistics");
+        sender.sendMessage(" §eKills§7: §f" + duelPlayer.getKills());
+        sender.sendMessage(" §eDeaths§7: §f" + duelPlayer.getDeaths());
+        sender.sendMessage(" §eWins§7: §f" + duelPlayer.getWins());
+        sender.sendMessage(" §eLosses§7: §f" + duelPlayer.getLosses());
+        sender.sendMessage(" §eWin Streak§7: §f" + duelPlayer.getWinStreak());
     }
 }

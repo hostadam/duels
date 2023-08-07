@@ -1,0 +1,8 @@
+host: "127.0.0.1"
+database: "dueldata"
+port: 25565
+auth:
+  enabled: true
+  username: "root"
+  database: "dueldata"
+  password: "admin"

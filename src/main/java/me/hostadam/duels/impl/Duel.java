@@ -1,5 +1,6 @@
 package me.hostadam.duels.impl;
 
+import lombok.Getter;
 import me.hostadam.duels.DuelsPlugin;
 import me.hostadam.duels.impl.arena.Arena;
 import me.hostadam.duels.impl.kit.Kit;
@@ -11,6 +12,7 @@ import org.bukkit.scheduler.BukkitTask;
 
 import java.util.UUID;
 
+@Getter
 public class Duel {
 
     private UUID sender, opponent;
@@ -25,11 +27,16 @@ public class Duel {
         this.opponent = opponent;
     }
 
+    public Player getOpponentPlayer(Player player) {
+        return this.sender.equals(player.getUniqueId()) ? Bukkit.getPlayer(opponent) : Bukkit.getPlayer(sender);
+    }
+
     public void complete(UUID winner) {
         DuelPlayer senderDuelPlayer = DuelPlayer.fromUniqueId(sender), opponentDuelPlayer = DuelPlayer.fromUniqueId(opponent);
         senderDuelPlayer.returnToLocation();
         opponentDuelPlayer.returnToLocation();
 
+        if(winner == null) return;
         if(this.sender.equals(winner)) {
             senderDuelPlayer.updateWin();
             opponentDuelPlayer.updateLoss();
