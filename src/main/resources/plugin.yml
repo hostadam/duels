@@ -1,0 +1,5 @@
+name: Duels
+version: 1.0
+author: Hostadam
+main: me.hostadam.duels.DuelsPlugin
+api-version: 1.17
