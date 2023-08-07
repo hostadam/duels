@@ -36,6 +36,11 @@ public class AcceptCommand extends Command {
             sender.sendMessage("§cInvalid player.");
             return true;
         }
+        
+        if(player.getUniqueId().equals(opponent.getUniqueId())) {
+            sender.sendMessage("§cYou cannot duel yourself.");
+            return true;
+        }
 
         if(this.duelHandler.getDuelByPlayer(player) != null) {
             sender.sendMessage("§cYou are already in a duel.");
