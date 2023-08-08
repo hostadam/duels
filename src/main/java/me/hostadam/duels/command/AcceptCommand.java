@@ -2,7 +2,6 @@ package me.hostadam.duels.command;
 
 import me.hostadam.duels.DuelHandler;
 import me.hostadam.duels.impl.DuelRequest;
-import me.hostadam.duels.impl.kit.Kit;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
