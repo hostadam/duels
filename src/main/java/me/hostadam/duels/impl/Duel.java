@@ -32,6 +32,11 @@ public class Duel {
     }
 
     public void complete(UUID winner) {
+        if(this.task != null) {
+            this.task.cancel();
+            this.task = null;
+        }
+
         DuelPlayer senderDuelPlayer = DuelPlayer.fromUniqueId(sender), opponentDuelPlayer = DuelPlayer.fromUniqueId(opponent);
         senderDuelPlayer.returnToLocation();
         opponentDuelPlayer.returnToLocation();

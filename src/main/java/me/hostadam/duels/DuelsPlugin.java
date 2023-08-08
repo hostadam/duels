@@ -59,5 +59,6 @@ public class DuelsPlugin extends JavaPlugin {
     @Override
     public void onDisable() {
         this.duelHandler.cancelAll();
+        this.mongo.getClient().close();
     }
 }
