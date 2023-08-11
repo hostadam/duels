@@ -38,7 +38,7 @@ public class DuelsPlugin extends JavaPlugin {
         this.databaseConfig = new Config(this, "database");
         this.arenaConfig = new Config(this, "arena");
         this.kitConfig = new Config(this, "kit");
-        this.mongo = new DuelMongo(this);
+        //this.mongo = new DuelMongo(this);
         this.duelHandler = new DuelHandler(this);
 
         try {

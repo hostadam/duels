@@ -1,15 +1,14 @@
 package me.hostadam.duels.database;
 
-import com.mongodb.MongoClient;
-import com.mongodb.MongoCredential;
-import com.mongodb.ServerAddress;
+import com.mongodb.ConnectionString;
+import com.mongodb.MongoClientSettings;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import lombok.Getter;
 import me.hostadam.duels.DuelsPlugin;
 import org.bson.Document;
-
-import java.util.Arrays;
 
 @Getter
 public class DuelMongo {
@@ -19,24 +18,15 @@ public class DuelMongo {
     private MongoCollection<Document> collection;
 
     public DuelMongo(DuelsPlugin duelsPlugin) {
-        final String host = duelsPlugin.getDatabaseConfig().getString("database.host"),
-                database = duelsPlugin.getDatabaseConfig().getString("database.database");
-        final int port = duelsPlugin.getDatabaseConfig().getInt("database.port");
+        ConnectionString string = new ConnectionString(duelsPlugin.getDatabaseConfig().getString("database.connection-string"));
+        MongoClientSettings.Builder settings = MongoClientSettings.builder().applyConnectionString(string);
 
-        final boolean authEnabled = duelsPlugin.getDatabaseConfig().getBoolean("database.auth.enabled");
-
-        if(authEnabled) {
-            final String authUsername = duelsPlugin.getDatabaseConfig().getString("database.auth.username"),
-                    authDatabase = duelsPlugin.getDatabaseConfig().getString("database.auth.database"),
-                    authPassword = duelsPlugin.getDatabaseConfig().getString("database.auth.password");
-
-            this.client = new MongoClient(new ServerAddress(host, port), Arrays.asList(MongoCredential.createCredential(authUsername, authDatabase, authPassword.toCharArray())));
-        } else {
-            this.client = new MongoClient(new ServerAddress(host, port));
+        try {
+            this.client = MongoClients.create(settings.build());
+            this.database = this.client.getDatabase(string.getDatabase());
+            this.collection = this.database.getCollection(string.getCollection());
+        } catch (Exception exception) {
+            exception.printStackTrace();
         }
-
-        this.database = this.client.getDatabase(database);
     }
-
-
 }

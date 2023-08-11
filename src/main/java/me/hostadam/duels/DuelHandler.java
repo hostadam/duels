@@ -71,13 +71,13 @@ public class DuelHandler {
 
             for (String contentKey : kitConfig.getConfigurationSection("kits." + name + ".inventory_content").getKeys(false)) {
                 int slot = kitConfig.getInt("kits." + name + ".inventory_content." + contentKey + ".slot");
-                ItemStack piece = new ItemStack(Material.valueOf("kits." + key + ".inventory_content." + contentKey + ".material"));
+                ItemStack piece = new ItemStack(Material.valueOf(kitConfig.getString("kits." + key + ".inventory_content." + contentKey + ".material")));
                 piece.setAmount(kitConfig.getInt("kits." + key + ".inventory_content." + contentKey + ".amount"));
                 contents[slot] = piece;
             }
 
             try {
-                ItemStack piece = new ItemStack(Material.valueOf("kits." + key + ".armor_content.helmet.material"));
+                ItemStack piece = new ItemStack(Material.valueOf(kitConfig.getString("kits." + key + ".armor_content.helmet.material")));
                 piece.setAmount(kitConfig.getInt("kits." + key + ".armor_content.helmet.amount"));
                 armor[0] = piece;
             } catch (Exception exception) {
@@ -85,7 +85,7 @@ public class DuelHandler {
             }
 
             try {
-                ItemStack piece = new ItemStack(Material.valueOf("kits." + key + ".armor_content.chestplate.material"));
+                ItemStack piece = new ItemStack(Material.valueOf(kitConfig.getString("kits." + key + ".armor_content.chestplate.material")));
                 piece.setAmount(kitConfig.getInt("kits." + key + ".armor_content.chestplate.amount"));
                 armor[1] = piece;
             } catch (Exception exception) {
@@ -93,7 +93,7 @@ public class DuelHandler {
             }
 
             try {
-                ItemStack piece = new ItemStack(Material.valueOf("kits." + key + ".armor_content.leggings.material"));
+                ItemStack piece = new ItemStack(Material.valueOf(kitConfig.getString("kits." + key + ".armor_content.leggings.material")));
                 piece.setAmount(kitConfig.getInt("kits." + key + ".armor_content.leggings.amount"));
                 armor[2] = piece;
             } catch (Exception exception) {
@@ -101,7 +101,7 @@ public class DuelHandler {
             }
 
             try {
-                ItemStack piece = new ItemStack(Material.valueOf("kits." + key + ".armor_content.boots.material"));
+                ItemStack piece = new ItemStack(Material.valueOf(kitConfig.getString("kits." + key + ".armor_content.boots.material")));
                 piece.setAmount(kitConfig.getInt("kits." + key + ".armor_content.boots.amount"));
                 armor[3] = piece;
             } catch (Exception exception) {
@@ -149,7 +149,13 @@ public class DuelHandler {
     }
 
     public DuelRequest getDuelRequest(Player initiator, Player opponent) {
-        return this.requests.get(initiator.getUniqueId(), opponent.getUniqueId());
+        DuelRequest request = this.requests.get(initiator.getUniqueId(), opponent.getUniqueId());
+        if(request != null && request.hasExpired()) {
+            this.requests.remove(initiator.getUniqueId(), opponent.getUniqueId());
+            return null;
+        }
+
+        return request;
     }
 
     public Duel getDuelByPlayer(Player player) {

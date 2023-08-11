@@ -36,6 +36,16 @@ public class DuelCommand extends Command {
             return true;
         }
 
+        if(player.getUniqueId().equals(opponent.getUniqueId())) {
+            sender.sendMessage("§cYou cannot duel yourself.");
+            return true;
+        }
+
+        if(this.duelHandler.getDuelRequest(player, opponent) != null) {
+            sender.sendMessage("§cYou have already sent a duel request.");
+            return true;
+        }
+
         if(this.duelHandler.getDuelByPlayer(player) != null) {
             sender.sendMessage("§cYou are already in a duel.");
             return true;
